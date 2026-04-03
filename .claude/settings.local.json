@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(robocopy \"app\" \"apps/web/app\" /E /MOVE /NFL /NDL /NJH /NJS)",
+      "Bash(echo \"Exit: $?\")"
+    ]
+  }
+}
