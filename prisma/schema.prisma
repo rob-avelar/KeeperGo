@@ -1,0 +1,336 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(ORGANIZER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Notification preferences
+  emailNotifications         Boolean  @default(true)
+  notifyBookingAccepted      Boolean  @default(true)
+  notifyBookingCancelled     Boolean  @default(true)
+  notifyMatchReminder24h     Boolean  @default(true)
+  notifyMatchReminder2h      Boolean  @default(true)
+  notifyPaymentReceived      Boolean  @default(true)
+
+  accounts           Account[]
+  sessions           Session[]
+  goalkeeperProfile  GoalkeeperProfile?
+  organizerBookings  Booking[]          @relation("OrganizerBookings")
+  goalkeeperBookings Booking[]          @relation("GoalkeeperBookings")
+  ratingsGiven       Rating[]           @relation("RatingsGiven")
+  ratingsReceived    Rating[]           @relation("RatingsReceived")
+  payments           Payment[]
+  notifications      Notification[]
+  favoriteGoalkeepers FavoriteGoalkeeper[] @relation("OrganizerFavorites")
+  favoritedBy         FavoriteGoalkeeper[] @relation("GoalkeeperFavorites")
+  betaInvite          BetaInvite[]
+  referralCode        String?             @unique
+  referredByCode      String?
+  referralsMade       Referral[]          @relation("ReferralsMade")
+  referralsReceived   Referral[]          @relation("ReferralsReceived")
+
+  @@map("users")
+}
+
+model GoalkeeperProfile {
+  id                String      @id @default(cuid())
+  userId            String      @unique
+  age               Int?
+  bio               String?
+  experienceLevel   String?
+  preferredFields   String[]    @default([])
+  serviceRadius     Int         @default(10) // in kilometers
+  hourlyRateMin     Int         @default(2500) // in cents
+  hourlyRateMax     Int         @default(5000) // in cents
+  profilePhotoPath  String?
+  availability      Json?       // Store availability as JSON
+  isActive          Boolean     @default(true)
+  totalMatches      Int         @default(0)
+  averageRating     Float       @default(0.0)
+  totalEarnings     Int         @default(0) // in cents
+  latitude          Float?
+  longitude         Float?
+  address           String?
+  city              String?
+  postalCode        String?
+  
+  // Warning and blocking system
+  warningCount      Int         @default(0)
+  warnings          Int         @default(0)
+  blockedUntil      DateTime?
+  isBlocked         Boolean     @default(false)
+  blockReason       String?
+  
+  // Stripe Connect fields for bank payouts
+  stripeAccountId       String?   @unique // Stripe Connect Express Account ID
+  stripeAccountStatus   String?   // Onboarding status: 'incomplete', 'pending', 'complete', 'restricted'
+  stripeOnboardingLink  String?   // Temporary onboarding link (expires after use)
+  stripeLinkExpiresAt   DateTime? // Expiration time for onboarding link
+  stripeDetailsSubmitted Boolean  @default(false) // Whether user completed Stripe onboarding
+  stripeChargesEnabled   Boolean  @default(false) // Whether Stripe account can receive charges
+  stripePayoutsEnabled   Boolean  @default(false) // Whether Stripe account can receive payouts
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@map("goalkeeper_profiles")
+}
+
+model Booking {
+  id                  String        @id @default(cuid())
+  organizerId         String
+  goalkeeperId        String?
+  goalkeeperProfileId String?
+  date                DateTime
+  duration            Int           // in hours
+  location            String
+  latitude            Float?
+  longitude           Float?
+  fieldType           String
+  pricePerHour        Int           // in cents
+  totalAmount         Int           // in cents
+  status              BookingStatus @default(PENDING)
+  specialRequests     String?
+  isCompleted         Boolean       @default(false)
+  
+  // Cancellation fields
+  cancelledAt         DateTime?
+  cancelledBy         String?       // userId of who cancelled
+  cancellationReason  String?
+  cancellationFee     Int?          // in cents
+  refundAmount        Int?          // in cents
+  
+  // Priority fields (when goalkeeper cancels, booking goes back to available)
+  isPriority              Boolean      @default(false)
+  priorityReason          String?      // e.g. "Goalkeeper cancelled 3h before match"
+
+  // Confirmation fields
+  confirmationDeadline    DateTime?    // 48h after match time
+  goalkeeperConfirmedAt   DateTime?    // when goalkeeper confirmed their attendance
+  confirmedAt             DateTime?    // when organizer confirmed
+  noShow                  Boolean      @default(false) // if goalkeeper didn't show up
+  
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  organizer         User                  @relation("OrganizerBookings", fields: [organizerId], references: [id])
+  goalkeeper        User?                 @relation("GoalkeeperBookings", fields: [goalkeeperId], references: [id])
+  goalkeeperProfile GoalkeeperProfile?    @relation(fields: [goalkeeperProfileId], references: [id])
+  ratings           Rating[]
+  payments          Payment[]
+  notifications     Notification[]
+
+  @@map("bookings")
+}
+
+model Rating {
+  id             String   @id @default(cuid())
+  bookingId      String
+  raterId        String
+  ratedUserId    String
+  punctuality    Int      // 1-5 stars
+  attitude       Int      // 1-5 stars
+  technicalSkill Int      // 1-10 stars
+  overallRating  Float    // calculated average
+  comment        String?
+  createdAt      DateTime @default(now())
+
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  rater     User    @relation("RatingsGiven", fields: [raterId], references: [id])
+  ratedUser User    @relation("RatingsReceived", fields: [ratedUserId], references: [id])
+
+  @@unique([bookingId, raterId])
+  @@map("ratings")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  userId            String
+  bookingId         String?
+  stripePaymentId   String?       @unique
+  amount            Int           // in cents
+  platformFee       Int           // in cents
+  goalkeeperEarning Int           // in cents
+  status            PaymentStatus @default(PENDING)
+  paymentMethod     String?
+  stripeClientSecret String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}
+
+model Notification {
+  id        String             @id @default(cuid())
+  userId    String
+  bookingId String?
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean            @default(false)
+  data      Json?              // Additional data as JSON
+  createdAt DateTime           @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model FavoriteGoalkeeper {
+  id           String   @id @default(cuid())
+  organizerId  String
+  goalkeeperId String
+  createdAt    DateTime @default(now())
+
+  organizer  User @relation("OrganizerFavorites", fields: [organizerId], references: [id], onDelete: Cascade)
+  goalkeeper User @relation("GoalkeeperFavorites", fields: [goalkeeperId], references: [id], onDelete: Cascade)
+
+  @@unique([organizerId, goalkeeperId])
+  @@map("favorite_goalkeepers")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum UserRole {
+  ORGANIZER
+  GOALKEEPER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  AWAITING_CONFIRMATION
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  BOOKING_REQUEST
+  BOOKING_ACCEPTED
+  BOOKING_REJECTED
+  BOOKING_CONFIRMED
+  BOOKING_CANCELLED
+  PAYMENT_RECEIVED
+  RATING_REQUEST
+  CONFIRMATION_REMINDER
+  NO_SHOW_REPORTED
+  PAYMENT_RELEASED
+  WARNING_ISSUED
+  BLOCKED
+  GENERAL
+}
+
+model BetaInvite {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  email       String?
+  role        UserRole?
+  usedBy      String?
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime?
+  notes       String?
+  
+  user        User?     @relation(fields: [usedBy], references: [id])
+}
+
+model Referral {
+  id              String    @id @default(cuid())
+  referrerId      String
+  referredId      String?
+  referralCode    String    @unique
+  status          ReferralStatus @default(PENDING)
+  rewardAmount    Int       @default(500) // in cents (€5)
+  referrerRewarded Boolean  @default(false)
+  referredRewarded Boolean  @default(false)
+  createdAt       DateTime  @default(now())
+  usedAt          DateTime?
+
+  referrer        User      @relation("ReferralsMade", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred        User?     @relation("ReferralsReceived", fields: [referredId], references: [id], onDelete: SetNull)
+
+  @@map("referrals")
+}
+
+enum ReferralStatus {
+  PENDING
+  SIGNED_UP
+  COMPLETED  // referred user completed first booking
+}
+
+model AppSettings {
+  id              String   @id @default("settings")
+  betaModeEnabled Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
