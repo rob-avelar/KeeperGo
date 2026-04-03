@@ -1680,6 +1680,13 @@
     "@babel/runtime" "^7.13.10"
     "@radix-ui/react-compose-refs" "1.0.0"
 
+"@react-native-community/datetimepicker@~8.2.0":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/datetimepicker/-/datetimepicker-8.2.0.tgz#f62ac4fc12bd527fbbe93934e6c1cfbb7ba570f3"
+  integrity sha512-qrUPhiBvKGuG9Y+vOqsc56RPFcHa1SU2qbAMT0hfGkoFIj3FodE0VuPVrEa8fgy7kcD5NQmkZIKgHOBLV0+hWg==
+  dependencies:
+    invariant "^2.2.4"
+
 "@react-native/assets-registry@0.76.9":
   version "0.76.9"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.76.9.tgz#ec63d32556c29bfa29e55b5e6e24c9d6e1ebbfac"
@@ -4588,6 +4595,11 @@ lru-cache@^5.1.1:
   integrity sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
   dependencies:
     yallist "^3.0.2"
+
+lucide-react-native@~0.475.0:
+  version "0.475.0"
+  resolved "https://registry.yarnpkg.com/lucide-react-native/-/lucide-react-native-0.475.0.tgz#a96bbcaa8d953c845cf3038d136aba408318c484"
+  integrity sha512-V5tho5qQ89GD4qdzL07ZyXdrnpXZFLirGfaG6BB2vKhO6X1iA7UYYqntgBQ//ZuTUEdevskl+dVT5O4A9oOJUg==
 
 make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
