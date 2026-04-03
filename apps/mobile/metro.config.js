@@ -2,16 +2,13 @@ const { getDefaultConfig } = require('expo/metro-config')
 const path = require('path')
 
 const projectRoot = __dirname
-const workspaceRoot = path.resolve(projectRoot, '../..')
 
 const config = getDefaultConfig(projectRoot)
 
-// Permite que o Metro encontre os pacotes compartilhados do monorepo
-config.watchFolders = [workspaceRoot]
-
-config.resolver.nodeModulesPaths = [
-  path.resolve(projectRoot, 'node_modules'),
-  path.resolve(workspaceRoot, 'node_modules'),
-]
+// Resolve os pacotes compartilhados localmente (para EAS Build funcionar)
+config.resolver.extraNodeModules = {
+  '@keepergo/api-client': path.resolve(projectRoot, 'lib/packages/api-client'),
+  '@keepergo/shared-types': path.resolve(projectRoot, 'lib/packages/shared-types'),
+}
 
 module.exports = config

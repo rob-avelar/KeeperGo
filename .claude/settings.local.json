@@ -3,7 +3,11 @@
     "allow": [
       "Bash(git add:*)",
       "Bash(robocopy \"app\" \"apps/web/app\" /E /MOVE /NFL /NDL /NJH /NJS)",
-      "Bash(echo \"Exit: $?\")"
+      "Bash(echo \"Exit: $?\")",
+      "Bash(yarn install:*)",
+      "Bash(where yarn:*)",
+      "Read(//c/Users/gonca/AppData/Roaming/**)",
+      "Bash(powershell -Command \"Get-Command yarn -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source; Get-ChildItem -Path 'C:\\\\Users\\\\gonca' -Filter 'yarn*' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 5 FullName\")"
     ]
   }
 }
