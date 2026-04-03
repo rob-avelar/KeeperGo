@@ -52,12 +52,6 @@
           "merchantIdentifier": "merchant.nl.keepergo",
           "enableGooglePay": true
         }
-      ],
-      [
-        "react-native-maps",
-        {
-          "googleMapsApiKey": ""
-        }
       ]
     ],
     "experiments": {
