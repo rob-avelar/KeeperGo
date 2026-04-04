@@ -9,9 +9,13 @@
       "distribution": "internal"
     },
     "preview": {
+      "developmentClient": false,
       "distribution": "internal",
       "android": { "buildType": "apk" },
-      "ios": { "simulator": false },
+      "ios": {
+        "simulator": false,
+        "buildConfiguration": "Release"
+      },
       "channel": "preview",
       "env": {
         "YARN_ENABLE_IMMUTABLE_INSTALLS": "false",
@@ -20,9 +24,11 @@
     },
     "production": {
       "autoIncrement": true,
+      "developmentClient": false,
       "channel": "production",
       "ios": {
-        "distribution": "store"
+        "distribution": "store",
+        "buildConfiguration": "Release"
       }
     }
   },
