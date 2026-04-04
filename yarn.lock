@@ -2022,10 +2022,10 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@stripe/stripe-react-native@0.40.0":
-  version "0.40.0"
-  resolved "https://registry.yarnpkg.com/@stripe/stripe-react-native/-/stripe-react-native-0.40.0.tgz#5fb2cfb21d60e995522010b3e20976153f64094e"
-  integrity sha512-zJkGgkohmsV8+HCt5DnJZ4LjdPm0KduJ9z6AzHfQ6dFzJbSeHsl9F+JQDPq+CADrLhHdVb4nkeOT1OwhkEH90Q==
+"@stripe/stripe-react-native@0.62.0":
+  version "0.62.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-react-native/-/stripe-react-native-0.62.0.tgz#4bcf894ac66cf5db3076b555126c0f62873f7c9c"
+  integrity sha512-ojYyebNlLNCMtu5dNMuoWrOXiF6bZqygtBQOi9WdjQRWCoB76H51i9Pi1rvDq7Gz81djCy8+zt6AFa3VEJ9Z7A==
 
 "@tanstack/query-core@5.0.0":
   version "5.0.0"

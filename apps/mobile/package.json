@@ -24,7 +24,7 @@
     "expo-status-bar": "~2.2.0",
     "expo-web-browser": "~14.0.0",
     "expo-splash-screen": "~0.29.0",
-    "@stripe/stripe-react-native": "0.40.0",
+    "@stripe/stripe-react-native": "0.62.0",
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-safe-area-context": "~5.1.0",
