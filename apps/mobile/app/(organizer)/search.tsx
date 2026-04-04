@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
 import * as Location from 'expo-location'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
@@ -42,7 +41,6 @@ function GoalkeeperCard({ gk, onPress }: { gk: GoalkeeperProfile; onPress: () =>
 }
 
 export default function SearchScreen() {
-  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [searchCity, setSearchCity] = useState('')
   const router = useRouter()
@@ -84,59 +82,8 @@ export default function SearchScreen() {
         />
       </View>
 
-      <View style={styles.toggle}>
-        <TouchableOpacity
-          style={[styles.toggleBtn, viewMode === 'list' && styles.toggleBtnActive]}
-          onPress={() => setViewMode('list')}
-        >
-          <Text style={[styles.toggleText, viewMode === 'list' && styles.toggleTextActive]}>
-            List
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.toggleBtn, viewMode === 'map' && styles.toggleBtnActive]}
-          onPress={() => setViewMode('map')}
-        >
-          <Text style={[styles.toggleText, viewMode === 'map' && styles.toggleTextActive]}>
-            Map
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       {isLoading ? (
         <ActivityIndicator color="#a3e635" style={{ flex: 1 }} />
-      ) : viewMode === 'map' ? (
-        <MapView
-          style={styles.map}
-          region={
-            coords
-              ? {
-                  latitude: coords.lat,
-                  longitude: coords.lng,
-                  latitudeDelta: 0.5,
-                  longitudeDelta: 0.5,
-                }
-              : {
-                  latitude: 52.3676,
-                  longitude: 4.9041,
-                  latitudeDelta: 1,
-                  longitudeDelta: 1,
-                }
-          }
-          showsUserLocation
-        >
-          {goalkeepers
-            ?.filter((gk) => gk.latitude && gk.longitude)
-            .map((gk) => (
-              <Marker
-                key={gk.id}
-                coordinate={{ latitude: gk.latitude!, longitude: gk.longitude! }}
-                title={gk.user?.name}
-                description={`⭐ ${gk.averageRating.toFixed(1)} · €${gk.hourlyRateMin}/h`}
-                onCalloutPress={() => goToProfile(gk.id)}
-              />
-            ))}
-        </MapView>
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
           {goalkeepers?.length === 0 ? (
@@ -169,20 +116,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#ffffff',
   },
-  toggle: {
-    flexDirection: 'row',
-    margin: 12,
-    backgroundColor: '#1f2937',
-    borderRadius: 10,
-    padding: 4,
-    borderWidth: 1,
-    borderColor: '#374151',
-  },
-  toggleBtn: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 8 },
-  toggleBtnActive: { backgroundColor: '#a3e635' },
-  toggleText: { fontSize: 14, fontWeight: '500', color: '#9ca3af' },
-  toggleTextActive: { color: '#111827', fontWeight: '700' },
-  map: { flex: 1 },
   list: { padding: 12, paddingBottom: 40 },
   card: {
     backgroundColor: '#1f2937',
