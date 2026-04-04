@@ -12,12 +12,15 @@
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "ios": { "simulator": false },
+      "channel": "preview",
       "env": {
-        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false"
+        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false",
+        "NODE_ENV": "production"
       }
     },
     "production": {
       "autoIncrement": true,
+      "channel": "production",
       "ios": {
         "distribution": "store"
       }
