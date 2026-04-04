@@ -16,9 +16,9 @@
       "supportsTablet": false,
       "bundleIdentifier": "nl.keepergo.app",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "KeeperGo usa sua localização para encontrar goleiros perto de você.",
-        "NSCameraUsageDescription": "KeeperGo usa sua câmera para fazer upload da sua foto de perfil.",
-        "NSPhotoLibraryUsageDescription": "KeeperGo acessa suas fotos para fazer upload da sua foto de perfil."
+        "NSLocationWhenInUseUsageDescription": "KeeperGo uses your location to find goalkeepers near you.",
+        "NSCameraUsageDescription": "KeeperGo uses your camera to upload your profile photo.",
+        "NSPhotoLibraryUsageDescription": "KeeperGo accesses your photos to upload your profile photo."
       }
     },
     "android": {
