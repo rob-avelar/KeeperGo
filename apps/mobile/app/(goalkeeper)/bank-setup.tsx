@@ -24,27 +24,24 @@ export default function BankSetupScreen() {
   async function handleConnectStripe() {
     setIsConnecting(true)
     try {
-      // Garante que a conta existe
       await apiClient.createStripeAccount().catch(() => {
-        // Pode já existir — ignora o erro
+        // Account may already exist — ignore error
       })
 
-      // Obtém link de onboarding
       const { url } = await apiClient.getStripeAccountLink(
         'keepergo://bank-setup',
         'keepergo://bank-setup',
       )
 
-      // Abre no browser in-app
       const result = await WebBrowser.openAuthSessionAsync(url, 'keepergo://bank-setup')
 
       if (result.type === 'success') {
         await refetch()
-        Alert.alert('Sucesso!', 'Conta bancária configurada. Você já pode receber pagamentos.')
+        Alert.alert('Account Connected!', 'Your bank account is set up. You can now receive payments.')
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erro ao conectar com Stripe.'
-      Alert.alert('Erro', msg)
+      const msg = err instanceof Error ? err.message : 'Failed to connect with Stripe.'
+      Alert.alert('Error', msg)
     } finally {
       setIsConnecting(false)
     }
@@ -52,8 +49,8 @@ export default function BankSetupScreen() {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator color="#1a56db" size="large" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#111827' }}>
+        <ActivityIndicator color="#a3e635" size="large" />
       </View>
     )
   }
@@ -62,35 +59,34 @@ export default function BankSetupScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Configuração de pagamentos</Text>
+      <Text style={styles.title}>Payment Setup</Text>
       <Text style={styles.subtitle}>
-        Para receber pelos seus jogos, conecte sua conta bancária via Stripe.
+        To receive payments for your matches, connect your bank account via Stripe.
       </Text>
 
-      {/* Status atual */}
       <View style={styles.statusCard}>
-        <Text style={styles.statusTitle}>Status da conta</Text>
-        <StatusRow label="Conta criada" ok={status?.detailsSubmitted ?? false} />
-        <StatusRow label="Receber pagamentos" ok={status?.chargesEnabled ?? false} />
-        <StatusRow label="Saques habilitados" ok={status?.payoutsEnabled ?? false} />
+        <Text style={styles.statusTitle}>Account Status</Text>
+        <StatusRow label="Account created" ok={status?.detailsSubmitted ?? false} />
+        <StatusRow label="Receive payments" ok={status?.chargesEnabled ?? false} />
+        <StatusRow label="Payouts enabled" ok={status?.payoutsEnabled ?? false} />
       </View>
 
       {isFullySetup ? (
         <View style={styles.successCard}>
           <Text style={styles.successIcon}>✅</Text>
-          <Text style={styles.successTitle}>Tudo configurado!</Text>
+          <Text style={styles.successTitle}>All set!</Text>
           <Text style={styles.successText}>
-            Você está pronto para receber pagamentos pelos seus jogos.
+            You're ready to receive payments for your matches.
           </Text>
         </View>
       ) : (
         <>
           <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>Como funciona?</Text>
-            <Text style={styles.infoItem}>1. Clique em "Conectar conta bancária"</Text>
-            <Text style={styles.infoItem}>2. Complete o cadastro no Stripe (seguro e criptografado)</Text>
-            <Text style={styles.infoItem}>3. Após aprovação, os pagamentos são automáticos</Text>
-            <Text style={styles.infoItem}>4. Você recebe em 2-7 dias úteis após cada jogo</Text>
+            <Text style={styles.infoTitle}>How does it work?</Text>
+            <Text style={styles.infoItem}>1. Click "Connect Bank Account"</Text>
+            <Text style={styles.infoItem}>2. Complete the Stripe onboarding (secure & encrypted)</Text>
+            <Text style={styles.infoItem}>3. After approval, payments are automatic</Text>
+            <Text style={styles.infoItem}>4. Receive payouts 2-7 business days after each match</Text>
           </View>
 
           <TouchableOpacity
@@ -99,16 +95,16 @@ export default function BankSetupScreen() {
             disabled={isConnecting}
           >
             {isConnecting ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#111827" />
             ) : (
               <Text style={styles.connectButtonText}>
-                {status?.detailsSubmitted ? 'Continuar configuração' : 'Conectar conta bancária'}
+                {status?.detailsSubmitted ? 'Continue Setup' : 'Connect Bank Account'}
               </Text>
             )}
           </TouchableOpacity>
 
           <Text style={styles.stripe}>
-            Processado com segurança por{' '}
+            Securely processed by{' '}
             <Text style={styles.stripeLink} onPress={() => Linking.openURL('https://stripe.com')}>
               Stripe
             </Text>
@@ -124,63 +120,60 @@ function StatusRow({ label, ok }: { label: string; ok: boolean }) {
     <View style={styles.statusRow}>
       <Text style={styles.statusLabel}>{label}</Text>
       <Text style={ok ? styles.statusOk : styles.statusPending}>
-        {ok ? '✓ OK' : '○ Pendente'}
+        {ok ? '✓ OK' : '○ Pending'}
       </Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: '#111827' },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 24, fontWeight: '800', color: '#111827', marginBottom: 8 },
-  subtitle: { fontSize: 15, color: '#6b7280', lineHeight: 22, marginBottom: 24 },
+  title: { fontSize: 24, fontWeight: '800', color: '#ffffff', marginBottom: 8 },
+  subtitle: { fontSize: 15, color: '#9ca3af', lineHeight: 22, marginBottom: 24 },
   statusCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1f2937',
     borderRadius: 12,
     padding: 16,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#374151',
   },
-  statusTitle: { fontSize: 14, fontWeight: '700', color: '#374151', marginBottom: 12 },
-  statusRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderTopWidth: 1, borderTopColor: '#f3f4f6' },
-  statusLabel: { fontSize: 14, color: '#374151' },
-  statusOk: { fontSize: 14, color: '#10b981', fontWeight: '600' },
-  statusPending: { fontSize: 14, color: '#9ca3af' },
+  statusTitle: { fontSize: 14, fontWeight: '700', color: '#d1d5db', marginBottom: 12 },
+  statusRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderTopWidth: 1, borderTopColor: '#374151' },
+  statusLabel: { fontSize: 14, color: '#9ca3af' },
+  statusOk: { fontSize: 14, color: '#a3e635', fontWeight: '600' },
+  statusPending: { fontSize: 14, color: '#6b7280' },
   successCard: {
-    backgroundColor: '#f0fdf4',
+    backgroundColor: '#1a2410',
     borderRadius: 12,
     padding: 24,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#bbf7d0',
+    borderColor: '#a3e635',
   },
   successIcon: { fontSize: 48, marginBottom: 12 },
-  successTitle: { fontSize: 20, fontWeight: '800', color: '#15803d', marginBottom: 8 },
-  successText: { fontSize: 14, color: '#166534', textAlign: 'center', lineHeight: 20 },
+  successTitle: { fontSize: 20, fontWeight: '800', color: '#a3e635', marginBottom: 8 },
+  successText: { fontSize: 14, color: '#d1d5db', textAlign: 'center', lineHeight: 20 },
   infoCard: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#1f2937',
     borderRadius: 12,
     padding: 16,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#bfdbfe',
+    borderColor: '#374151',
   },
-  infoTitle: { fontSize: 14, fontWeight: '700', color: '#1e40af', marginBottom: 10 },
-  infoItem: { fontSize: 13, color: '#1e3a8a', lineHeight: 24 },
+  infoTitle: { fontSize: 14, fontWeight: '700', color: '#d1d5db', marginBottom: 10 },
+  infoItem: { fontSize: 13, color: '#9ca3af', lineHeight: 24 },
   connectButton: {
-    backgroundColor: '#1a56db',
+    backgroundColor: '#a3e635',
     borderRadius: 12,
     paddingVertical: 18,
     alignItems: 'center',
     marginBottom: 16,
   },
   connectButtonDisabled: { opacity: 0.6 },
-  connectButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  stripe: { textAlign: 'center', fontSize: 12, color: '#9ca3af' },
-  stripeLink: { color: '#1a56db', textDecorationLine: 'underline' },
+  connectButtonText: { color: '#111827', fontSize: 16, fontWeight: '700' },
+  stripe: { textAlign: 'center', fontSize: 12, color: '#6b7280' },
+  stripeLink: { color: '#a3e635', textDecorationLine: 'underline' },
 })

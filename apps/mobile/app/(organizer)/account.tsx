@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-} from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useAuthStore } from '@/lib/auth-store'
 
@@ -14,40 +7,44 @@ export default function AccountScreen() {
   const router = useRouter()
 
   function handleSignOut() {
-    Alert.alert('Sair', 'Tem certeza que deseja sair?', [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Sair', style: 'destructive', onPress: () => signOut() },
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Sign Out', style: 'destructive', onPress: () => signOut() },
     ])
   }
-
-  const initial = user?.name?.charAt(0).toUpperCase() ?? '?'
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.profile}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{initial}</Text>
+          <Text style={styles.avatarText}>{user?.name?.charAt(0).toUpperCase() ?? '?'}</Text>
         </View>
         <Text style={styles.name}>{user?.name}</Text>
         <Text style={styles.email}>{user?.email}</Text>
         <View style={styles.roleBadge}>
-          <Text style={styles.roleText}>Organizador</Text>
+          <Text style={styles.roleText}>Organizer</Text>
         </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Conta</Text>
+        <Text style={styles.sectionTitle}>Account</Text>
+        <MenuItem label="My Bookings" onPress={() => router.push('/(organizer)/dashboard')} />
+        <MenuItem label="Notifications" onPress={() => router.push('/(organizer)/notifications')} />
+        <MenuItem label="Favourite Goalkeepers" onPress={() => {}} />
+      </View>
 
-        <MenuItem label="Minhas reservas" onPress={() => router.push('/(organizer)/dashboard')} />
-        <MenuItem label="Notificações" onPress={() => router.push('/(organizer)/notifications')} />
-        <MenuItem label="Goleiros favoritos" onPress={() => {}} />
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Support</Text>
+        <MenuItem label="Contact Us" onPress={() => {}} />
+        <MenuItem label="Privacy Policy" onPress={() => {}} />
+        <MenuItem label="Terms of Service" onPress={() => {}} />
       </View>
 
       <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-        <Text style={styles.signOutText}>Sair da conta</Text>
+        <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
 
-      <Text style={styles.version}>KeeperGo v1.0.0</Text>
+      <Text style={styles.version}>KeeperGo v1.0.0 · #1 Goalkeeper Platform in Netherlands</Text>
     </ScrollView>
   )
 }
@@ -62,57 +59,30 @@ function MenuItem({ label, onPress }: { label: string; onPress: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: '#111827' },
   content: { paddingBottom: 40 },
-  profile: { alignItems: 'center', padding: 32, backgroundColor: '#fff', marginBottom: 12 },
+  profile: { alignItems: 'center', padding: 32, backgroundColor: '#1f2937', marginBottom: 12 },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#1a56db',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
+    width: 80, height: 80, borderRadius: 40, backgroundColor: '#a3e635',
+    alignItems: 'center', justifyContent: 'center', marginBottom: 16,
   },
-  avatarText: { color: '#fff', fontSize: 32, fontWeight: '700' },
-  name: { fontSize: 22, fontWeight: '800', color: '#111827', marginBottom: 4 },
-  email: { fontSize: 14, color: '#6b7280', marginBottom: 12 },
-  roleBadge: {
-    backgroundColor: '#eff6ff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-  },
-  roleText: { fontSize: 13, color: '#1a56db', fontWeight: '600' },
-  section: { backgroundColor: '#fff', marginBottom: 12 },
+  avatarText: { color: '#111827', fontSize: 32, fontWeight: '700' },
+  name: { fontSize: 22, fontWeight: '800', color: '#ffffff', marginBottom: 4 },
+  email: { fontSize: 14, color: '#9ca3af', marginBottom: 12 },
+  roleBadge: { backgroundColor: '#1a2410', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: '#a3e635' },
+  roleText: { fontSize: 13, color: '#a3e635', fontWeight: '600' },
+  section: { backgroundColor: '#1f2937', marginBottom: 12 },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#9ca3af',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    fontSize: 12, fontWeight: '600', color: '#6b7280', paddingHorizontal: 16,
+    paddingTop: 16, paddingBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5,
   },
   menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderTopWidth: 1,
-    borderTopColor: '#f3f4f6',
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingHorizontal: 16, paddingVertical: 14, borderTopWidth: 1, borderTopColor: '#374151',
   },
-  menuLabel: { fontSize: 15, color: '#111827' },
-  menuArrow: { fontSize: 20, color: '#9ca3af' },
-  signOutButton: {
-    margin: 20,
-    backgroundColor: '#fee2e2',
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-  },
-  signOutText: { color: '#dc2626', fontSize: 16, fontWeight: '600' },
-  version: { textAlign: 'center', fontSize: 12, color: '#d1d5db', marginTop: 8 },
+  menuLabel: { fontSize: 15, color: '#ffffff' },
+  menuArrow: { fontSize: 20, color: '#6b7280' },
+  signOutButton: { margin: 20, backgroundColor: '#1f2937', borderRadius: 12, paddingVertical: 14, alignItems: 'center', borderWidth: 1, borderColor: '#ef4444' },
+  signOutText: { color: '#ef4444', fontSize: 16, fontWeight: '600' },
+  version: { textAlign: 'center', fontSize: 11, color: '#374151', marginTop: 8 },
 })

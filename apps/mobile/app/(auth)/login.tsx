@@ -22,17 +22,15 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     if (!email || !password) {
-      Alert.alert('Atenção', 'Preencha email e senha.')
+      Alert.alert('Required', 'Please enter your email and password.')
       return
     }
-
     setIsLoading(true)
     try {
       await signIn(email.trim().toLowerCase(), password)
-      // O AuthGate em _layout.tsx vai redirecionar automaticamente
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Erro ao fazer login.'
-      Alert.alert('Erro', message)
+      const message = err instanceof Error ? err.message : 'Login failed. Please try again.'
+      Alert.alert('Error', message)
     } finally {
       setIsLoading(false)
     }
@@ -44,14 +42,17 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.inner}>
-        <Text style={styles.logo}>KeeperGo</Text>
-        <Text style={styles.subtitle}>Encontre seu goleiro perfeito</Text>
+        <View style={styles.logoRow}>
+          <Text style={styles.logoIcon}>⚽</Text>
+          <Text style={styles.logo}>KeeperGo</Text>
+        </View>
+        <Text style={styles.subtitle}>Find the Perfect Goalkeeper for Your Match</Text>
 
         <View style={styles.form}>
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#6b7280"
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
@@ -60,8 +61,8 @@ export default function LoginScreen() {
           />
           <TextInput
             style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#9ca3af"
+            placeholder="Password"
+            placeholderTextColor="#6b7280"
             secureTextEntry
             autoComplete="password"
             value={password}
@@ -75,16 +76,16 @@ export default function LoginScreen() {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#111827" />
             ) : (
-              <Text style={styles.buttonText}>Entrar</Text>
+              <Text style={styles.buttonText}>Sign In</Text>
             )}
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
           <Text style={styles.link}>
-            Não tem conta? <Text style={styles.linkBold}>Cadastre-se</Text>
+            Don't have an account? <Text style={styles.linkBold}>Sign Up</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -93,63 +94,31 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9fafb',
-  },
-  inner: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  logo: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: '#1a56db',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
-    textAlign: 'center',
-    marginBottom: 40,
-  },
-  form: {
-    gap: 16,
-    marginBottom: 24,
-  },
+  container: { flex: 1, backgroundColor: '#111827' },
+  inner: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
+  logoRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  logoIcon: { fontSize: 32, marginRight: 8 },
+  logo: { fontSize: 36, fontWeight: '800', color: '#a3e635' },
+  subtitle: { fontSize: 15, color: '#9ca3af', textAlign: 'center', marginBottom: 40, lineHeight: 22 },
+  form: { gap: 16, marginBottom: 24 },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1f2937',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#374151',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: '#111827',
+    color: '#ffffff',
   },
   button: {
-    backgroundColor: '#1a56db',
+    backgroundColor: '#a3e635',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
   },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  link: {
-    textAlign: 'center',
-    color: '#6b7280',
-    fontSize: 14,
-  },
-  linkBold: {
-    color: '#1a56db',
-    fontWeight: '600',
-  },
+  buttonDisabled: { opacity: 0.6 },
+  buttonText: { color: '#111827', fontSize: 16, fontWeight: '700' },
+  link: { textAlign: 'center', color: '#6b7280', fontSize: 14 },
+  linkBold: { color: '#a3e635', fontWeight: '600' },
 })

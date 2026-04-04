@@ -1,4 +1,3 @@
-import { StripeProvider } from '@stripe/stripe-react-native'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Slot, useRouter, useSegments } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
@@ -17,8 +16,6 @@ const queryClient = new QueryClient({
     },
   },
 })
-
-const STRIPE_KEY = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ''
 
 function AuthGate() {
   const { user, isLoading, restoreSession } = useAuthStore()
@@ -53,15 +50,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StripeProvider
-          publishableKey={STRIPE_KEY}
-          merchantIdentifier="merchant.nl.keepergo"
-          urlScheme="keepergo"
-        >
-          <QueryClientProvider client={queryClient}>
-            <AuthGate />
-          </QueryClientProvider>
-        </StripeProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthGate />
+        </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   )

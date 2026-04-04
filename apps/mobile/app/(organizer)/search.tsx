@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
-  Image,
 } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 import * as Location from 'expo-location'
@@ -27,15 +26,15 @@ function GoalkeeperCard({ gk, onPress }: { gk: GoalkeeperProfile; onPress: () =>
         </View>
         <View style={styles.cardInfo}>
           <Text style={styles.cardName}>{gk.user?.name}</Text>
-          <Text style={styles.cardCity}>{gk.city ?? 'Cidade não informada'}</Text>
+          <Text style={styles.cardCity}>{gk.city ?? 'City not specified'}</Text>
           <View style={styles.cardMeta}>
             <Text style={styles.cardRating}>⭐ {gk.averageRating.toFixed(1)}</Text>
-            <Text style={styles.cardMatches}>{gk.totalMatches} jogos</Text>
+            <Text style={styles.cardMatches}>{gk.totalMatches} matches</Text>
           </View>
         </View>
         <View style={styles.cardPrice}>
           <Text style={styles.priceValue}>€{gk.hourlyRateMin}</Text>
-          <Text style={styles.priceLabel}>/hora</Text>
+          <Text style={styles.priceLabel}>/hour</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -75,25 +74,23 @@ export default function SearchScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Barra de pesquisa */}
       <View style={styles.searchBar}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Buscar por cidade..."
-          placeholderTextColor="#9ca3af"
+          placeholder="Search by city..."
+          placeholderTextColor="#6b7280"
           value={searchCity}
           onChangeText={setSearchCity}
         />
       </View>
 
-      {/* Toggle lista/mapa */}
       <View style={styles.toggle}>
         <TouchableOpacity
           style={[styles.toggleBtn, viewMode === 'list' && styles.toggleBtnActive]}
           onPress={() => setViewMode('list')}
         >
           <Text style={[styles.toggleText, viewMode === 'list' && styles.toggleTextActive]}>
-            Lista
+            List
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -101,13 +98,13 @@ export default function SearchScreen() {
           onPress={() => setViewMode('map')}
         >
           <Text style={[styles.toggleText, viewMode === 'map' && styles.toggleTextActive]}>
-            Mapa
+            Map
           </Text>
         </TouchableOpacity>
       </View>
 
       {isLoading ? (
-        <ActivityIndicator color="#1a56db" style={{ flex: 1 }} />
+        <ActivityIndicator color="#a3e635" style={{ flex: 1 }} />
       ) : viewMode === 'map' ? (
         <MapView
           style={styles.map}
@@ -144,7 +141,9 @@ export default function SearchScreen() {
         <ScrollView contentContainerStyle={styles.list}>
           {goalkeepers?.length === 0 ? (
             <View style={styles.empty}>
-              <Text style={styles.emptyText}>Nenhum goleiro encontrado.</Text>
+              <Text style={styles.emptyIcon}>🧤</Text>
+              <Text style={styles.emptyTitle}>No goalkeepers found</Text>
+              <Text style={styles.emptyText}>Try a different city or expand your search area.</Text>
             </View>
           ) : (
             goalkeepers?.map((gk) => (
@@ -158,59 +157,62 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
-  searchBar: { padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#e5e7eb' },
+  container: { flex: 1, backgroundColor: '#111827' },
+  searchBar: { padding: 16, backgroundColor: '#1f2937', borderBottomWidth: 1, borderBottomColor: '#374151' },
   searchInput: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#111827',
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#374151',
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,
-    color: '#111827',
+    color: '#ffffff',
   },
   toggle: {
     flexDirection: 'row',
     margin: 12,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: '#1f2937',
     borderRadius: 10,
     padding: 4,
+    borderWidth: 1,
+    borderColor: '#374151',
   },
   toggleBtn: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 8 },
-  toggleBtnActive: { backgroundColor: '#fff' },
-  toggleText: { fontSize: 14, fontWeight: '500', color: '#6b7280' },
+  toggleBtnActive: { backgroundColor: '#a3e635' },
+  toggleText: { fontSize: 14, fontWeight: '500', color: '#9ca3af' },
   toggleTextActive: { color: '#111827', fontWeight: '700' },
   map: { flex: 1 },
   list: { padding: 12, paddingBottom: 40 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1f2937',
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#374151',
   },
   cardRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   avatar: {
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#1a56db',
+    backgroundColor: '#a3e635',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  avatarText: { color: '#111827', fontSize: 20, fontWeight: '700' },
   cardInfo: { flex: 1 },
-  cardName: { fontSize: 16, fontWeight: '700', color: '#111827' },
-  cardCity: { fontSize: 13, color: '#6b7280', marginTop: 2 },
+  cardName: { fontSize: 16, fontWeight: '700', color: '#ffffff' },
+  cardCity: { fontSize: 13, color: '#9ca3af', marginTop: 2 },
   cardMeta: { flexDirection: 'row', gap: 12, marginTop: 4 },
-  cardRating: { fontSize: 13, color: '#374151' },
-  cardMatches: { fontSize: 13, color: '#374151' },
+  cardRating: { fontSize: 13, color: '#d1d5db' },
+  cardMatches: { fontSize: 13, color: '#d1d5db' },
   cardPrice: { alignItems: 'flex-end' },
-  priceValue: { fontSize: 18, fontWeight: '800', color: '#1a56db' },
-  priceLabel: { fontSize: 12, color: '#6b7280' },
+  priceValue: { fontSize: 18, fontWeight: '800', color: '#a3e635' },
+  priceLabel: { fontSize: 12, color: '#9ca3af' },
   empty: { alignItems: 'center', paddingVertical: 48 },
-  emptyText: { fontSize: 16, color: '#6b7280' },
+  emptyIcon: { fontSize: 48, marginBottom: 12 },
+  emptyTitle: { fontSize: 18, fontWeight: '700', color: '#ffffff', marginBottom: 8 },
+  emptyText: { fontSize: 14, color: '#9ca3af', textAlign: 'center' },
 })

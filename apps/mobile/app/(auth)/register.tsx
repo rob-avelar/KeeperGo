@@ -1,11 +1,5 @@
 import { useState } from 'react'
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import { useRouter } from 'expo-router'
 
 export default function RegisterScreen() {
@@ -19,8 +13,13 @@ export default function RegisterScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Criar conta</Text>
-      <Text style={styles.subtitle}>Qual é o seu perfil no KeeperGo?</Text>
+      <View style={styles.logoRow}>
+        <Text style={styles.logoIcon}>⚽</Text>
+        <Text style={styles.logo}>KeeperGo</Text>
+      </View>
+
+      <Text style={styles.title}>Create Account</Text>
+      <Text style={styles.subtitle}>What's your role on KeeperGo?</Text>
 
       <View style={styles.cards}>
         <TouchableOpacity
@@ -29,11 +28,16 @@ export default function RegisterScreen() {
         >
           <Text style={styles.cardIcon}>⚽</Text>
           <Text style={[styles.cardTitle, selectedRole === 'ORGANIZER' && styles.cardTitleSelected]}>
-            Organizador
+            Organizer
           </Text>
           <Text style={styles.cardDesc}>
-            Organizo jogos e preciso contratar goleiros para as partidas.
+            I organize matches and need to book goalkeepers for my team.
           </Text>
+          {selectedRole === 'ORGANIZER' && (
+            <View style={styles.selectedBadge}>
+              <Text style={styles.selectedBadgeText}>✓ Selected</Text>
+            </View>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -42,11 +46,16 @@ export default function RegisterScreen() {
         >
           <Text style={styles.cardIcon}>🧤</Text>
           <Text style={[styles.cardTitle, selectedRole === 'GOALKEEPER' && styles.cardTitleSelected]}>
-            Goleiro
+            Goalkeeper
           </Text>
           <Text style={styles.cardDesc}>
-            Sou goleiro e quero ser contratado para jogar em partidas.
+            I'm a goalkeeper and want to get booked for amateur football matches.
           </Text>
+          {selectedRole === 'GOALKEEPER' && (
+            <View style={styles.selectedBadge}>
+              <Text style={styles.selectedBadgeText}>✓ Selected</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -55,90 +64,54 @@ export default function RegisterScreen() {
         onPress={handleContinue}
         disabled={!selectedRole}
       >
-        <Text style={styles.buttonText}>Continuar</Text>
+        <Text style={styles.buttonText}>Continue →</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.link}>Já tem conta? <Text style={styles.linkBold}>Entrar</Text></Text>
+        <Text style={styles.link}>Already have an account? <Text style={styles.linkBold}>Sign In</Text></Text>
       </TouchableOpacity>
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: '#f9fafb',
-    paddingHorizontal: 24,
-    paddingTop: 80,
-    paddingBottom: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
-    marginBottom: 32,
-  },
-  cards: {
-    gap: 16,
-    marginBottom: 32,
-  },
+  container: { flexGrow: 1, backgroundColor: '#111827', paddingHorizontal: 24, paddingTop: 64, paddingBottom: 40 },
+  logoRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 32 },
+  logoIcon: { fontSize: 24, marginRight: 6 },
+  logo: { fontSize: 28, fontWeight: '800', color: '#a3e635' },
+  title: { fontSize: 28, fontWeight: '800', color: '#ffffff', marginBottom: 8 },
+  subtitle: { fontSize: 15, color: '#9ca3af', marginBottom: 32 },
+  cards: { gap: 16, marginBottom: 32 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1f2937',
     borderRadius: 16,
     padding: 20,
     borderWidth: 2,
-    borderColor: '#e5e7eb',
+    borderColor: '#374151',
   },
-  cardSelected: {
-    borderColor: '#1a56db',
-    backgroundColor: '#eff6ff',
+  cardSelected: { borderColor: '#a3e635', backgroundColor: '#1a2410' },
+  cardIcon: { fontSize: 36, marginBottom: 12 },
+  cardTitle: { fontSize: 18, fontWeight: '700', color: '#ffffff', marginBottom: 8 },
+  cardTitleSelected: { color: '#a3e635' },
+  cardDesc: { fontSize: 14, color: '#9ca3af', lineHeight: 20 },
+  selectedBadge: {
+    marginTop: 12,
+    backgroundColor: '#a3e635',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
   },
-  cardIcon: {
-    fontSize: 36,
-    marginBottom: 12,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  cardTitleSelected: {
-    color: '#1a56db',
-  },
-  cardDesc: {
-    fontSize: 14,
-    color: '#6b7280',
-    lineHeight: 20,
-  },
+  selectedBadgeText: { fontSize: 12, fontWeight: '700', color: '#111827' },
   button: {
-    backgroundColor: '#1a56db',
+    backgroundColor: '#a3e635',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     marginBottom: 16,
   },
-  buttonDisabled: {
-    backgroundColor: '#93c5fd',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  link: {
-    textAlign: 'center',
-    color: '#6b7280',
-    fontSize: 14,
-  },
-  linkBold: {
-    color: '#1a56db',
-    fontWeight: '600',
-  },
+  buttonDisabled: { backgroundColor: '#374151' },
+  buttonText: { color: '#111827', fontSize: 16, fontWeight: '700' },
+  link: { textAlign: 'center', color: '#6b7280', fontSize: 14 },
+  linkBold: { color: '#a3e635', fontWeight: '600' },
 })

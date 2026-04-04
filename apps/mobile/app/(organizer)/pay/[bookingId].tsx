@@ -37,7 +37,7 @@ export default function PayScreen() {
       })
 
       if (initError) {
-        Alert.alert('Erro', initError.message)
+        Alert.alert('Error', initError.message)
         return
       }
 
@@ -45,20 +45,19 @@ export default function PayScreen() {
 
       if (paymentError) {
         if (paymentError.code !== 'Canceled') {
-          Alert.alert('Pagamento falhou', paymentError.message)
+          Alert.alert('Payment Failed', paymentError.message)
         }
         return
       }
 
-      // Confirmar pagamento na API
       await apiClient.confirmPayment(bookingId, clientSecret.split('_secret')[0])
 
-      Alert.alert('Pagamento confirmado! 🎉', 'Sua reserva foi paga com sucesso.', [
+      Alert.alert('Payment Confirmed! 🎉', 'Your booking has been paid successfully.', [
         { text: 'OK', onPress: () => router.replace('/(organizer)/dashboard') },
       ])
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erro ao processar pagamento.'
-      Alert.alert('Erro', msg)
+      const msg = err instanceof Error ? err.message : 'Failed to process payment.'
+      Alert.alert('Error', msg)
     } finally {
       setIsPaying(false)
     }
@@ -66,16 +65,16 @@ export default function PayScreen() {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator color="#1a56db" size="large" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#111827' }}>
+        <ActivityIndicator color="#a3e635" size="large" />
       </View>
     )
   }
 
   if (!booking) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-        <Text style={{ fontSize: 16, color: '#6b7280' }}>Reserva não encontrada.</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: '#111827' }}>
+        <Text style={{ fontSize: 16, color: '#9ca3af' }}>Booking not found.</Text>
       </View>
     )
   }
@@ -85,26 +84,26 @@ export default function PayScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Resumo da reserva</Text>
+      <Text style={styles.title}>Booking Summary</Text>
 
       <View style={styles.card}>
-        <Row label="Data" value={date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })} />
-        <Row label="Horário" value={date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} />
-        <Row label="Local" value={booking.location} />
-        {booking.goalkeeper && <Row label="Goleiro" value={booking.goalkeeper.name} />}
-        <Row label="Duração" value={`${booking.duration} minutos`} />
+        <Row label="Date" value={date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} />
+        <Row label="Time" value={date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} />
+        <Row label="Location" value={booking.location} />
+        {booking.goalkeeper && <Row label="Goalkeeper" value={booking.goalkeeper.name} />}
+        <Row label="Duration" value={`${booking.duration} minutes`} />
         <View style={styles.divider} />
-        <Row label="Valor/hora" value={`€${booking.pricePerHour.toFixed(2)}`} />
-        <Row label="Taxa plataforma" value={`€${booking.platformFee.toFixed(2)}`} small />
+        <Row label="Rate/hour" value={`€${booking.pricePerHour.toFixed(2)}`} />
+        <Row label="Platform fee" value={`€${booking.platformFee.toFixed(2)}`} small />
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalValue}>€{booking.totalAmount.toFixed(2)}</Text>
         </View>
       </View>
 
-      <View style={[styles.statusBadge, { backgroundColor: canPay ? '#dcfce7' : '#fef3c7' }]}>
-        <Text style={[styles.statusText, { color: canPay ? '#16a34a' : '#d97706' }]}>
-          {canPay ? '✓ Goleiro aceitou — pronto para pagar' : `Status: ${booking.status}`}
+      <View style={[styles.statusBadge, { backgroundColor: canPay ? '#1a2410' : '#1c1508' }]}>
+        <Text style={[styles.statusText, { color: canPay ? '#a3e635' : '#f59e0b' }]}>
+          {canPay ? '✓ Goalkeeper accepted — ready to pay' : `Status: ${booking.status}`}
         </Text>
       </View>
 
@@ -115,9 +114,9 @@ export default function PayScreen() {
           disabled={isPaying}
         >
           {isPaying ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#111827" />
           ) : (
-            <Text style={styles.payButtonText}>Pagar €{booking.totalAmount.toFixed(2)}</Text>
+            <Text style={styles.payButtonText}>Pay €{booking.totalAmount.toFixed(2)}</Text>
           )}
         </TouchableOpacity>
       )}
@@ -126,7 +125,7 @@ export default function PayScreen() {
         style={styles.backButton}
         onPress={() => router.replace('/(organizer)/dashboard')}
       >
-        <Text style={styles.backButtonText}>Voltar ao início</Text>
+        <Text style={styles.backButtonText}>Back to Dashboard</Text>
       </TouchableOpacity>
     </ScrollView>
   )
@@ -135,52 +134,49 @@ export default function PayScreen() {
 function Row({ label, value, small }: { label: string; value: string; small?: boolean }) {
   return (
     <View style={styles.row}>
-      <Text style={[styles.rowLabel, small && { color: '#9ca3af' }]}>{label}</Text>
-      <Text style={[styles.rowValue, small && { color: '#9ca3af' }]}>{value}</Text>
+      <Text style={[styles.rowLabel, small && { color: '#6b7280' }]}>{label}</Text>
+      <Text style={[styles.rowValue, small && { color: '#6b7280' }]}>{value}</Text>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: '#111827' },
   content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 22, fontWeight: '800', color: '#111827', marginBottom: 20 },
+  title: { fontSize: 22, fontWeight: '800', color: '#ffffff', marginBottom: 20 },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1f2937',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#374151',
     gap: 12,
   },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
-  rowLabel: { fontSize: 14, color: '#6b7280' },
-  rowValue: { fontSize: 14, color: '#111827', fontWeight: '500', textAlign: 'right', flex: 1, marginLeft: 12 },
-  divider: { height: 1, backgroundColor: '#e5e7eb' },
+  rowLabel: { fontSize: 14, color: '#9ca3af' },
+  rowValue: { fontSize: 14, color: '#ffffff', fontWeight: '500', textAlign: 'right', flex: 1, marginLeft: 12 },
+  divider: { height: 1, backgroundColor: '#374151' },
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  totalLabel: { fontSize: 16, fontWeight: '700', color: '#111827' },
-  totalValue: { fontSize: 22, fontWeight: '800', color: '#1a56db' },
-  statusBadge: { borderRadius: 12, padding: 14, marginBottom: 20 },
+  totalLabel: { fontSize: 16, fontWeight: '700', color: '#ffffff' },
+  totalValue: { fontSize: 22, fontWeight: '800', color: '#a3e635' },
+  statusBadge: { borderRadius: 12, padding: 14, marginBottom: 20, borderWidth: 1, borderColor: '#374151' },
   statusText: { fontSize: 14, fontWeight: '600', textAlign: 'center' },
   payButton: {
-    backgroundColor: '#1a56db',
+    backgroundColor: '#a3e635',
     borderRadius: 12,
     paddingVertical: 18,
     alignItems: 'center',
     marginBottom: 12,
   },
   payButtonDisabled: { opacity: 0.6 },
-  payButtonText: { color: '#fff', fontSize: 18, fontWeight: '700' },
+  payButtonText: { color: '#111827', fontSize: 18, fontWeight: '700' },
   backButton: {
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#374151',
   },
-  backButtonText: { color: '#6b7280', fontSize: 16 },
+  backButtonText: { color: '#9ca3af', fontSize: 16 },
 })

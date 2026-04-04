@@ -1,52 +1,48 @@
 import { Tabs } from 'expo-router'
-import { useColorScheme } from 'react-native'
 import { Home, User, Bell, CreditCard } from 'lucide-react-native'
 
 export default function GoalkeeperLayout() {
-  const colorScheme = useColorScheme()
-  const isDark = colorScheme === 'dark'
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#1a56db',
-        tabBarInactiveTintColor: isDark ? '#9ca3af' : '#6b7280',
+        tabBarActiveTintColor: '#a3e635',
+        tabBarInactiveTintColor: '#6b7280',
         tabBarStyle: {
-          backgroundColor: isDark ? '#111827' : '#fff',
-          borderTopColor: isDark ? '#1f2937' : '#e5e7eb',
+          backgroundColor: '#111827',
+          borderTopColor: '#1f2937',
         },
         headerStyle: {
-          backgroundColor: isDark ? '#111827' : '#fff',
+          backgroundColor: '#111827',
         },
-        headerTintColor: isDark ? '#fff' : '#111827',
+        headerTintColor: '#ffffff',
         headerTitleStyle: { fontWeight: '700' },
       }}
     >
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Início',
+          title: 'Home',
           tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Perfil',
+          title: 'Profile',
           tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="bank-setup"
         options={{
-          title: 'Pagamentos',
+          title: 'Payments',
           tabBarIcon: ({ color, size }) => <CreditCard color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          title: 'Notificações',
+          title: 'Notifications',
           tabBarIcon: ({ color, size }) => <Bell color={color} size={size} />,
         }}
       />
