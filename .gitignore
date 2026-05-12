@@ -72,3 +72,6 @@ next-env.d.ts
 .cache/
 tmp/
 temp/
+
+# Claude Code local settings
+.claude/

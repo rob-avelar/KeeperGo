@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { signIn } = useAuthStore()
+  const { signIn, signInWithGoogle } = useAuthStore()
   const router = useRouter()
 
   async function handleLogin() {
@@ -30,6 +30,18 @@ export default function LoginScreen() {
       await signIn(email.trim().toLowerCase(), password)
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Login failed. Please try again.'
+      Alert.alert('Error', message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setIsLoading(true)
+    try {
+      await signInWithGoogle()
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Google sign in failed. Please try again.'
       Alert.alert('Error', message)
     } finally {
       setIsLoading(false)
@@ -81,6 +93,14 @@ export default function LoginScreen() {
               <Text style={styles.buttonText}>Sign In</Text>
             )}
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.googleButton, isLoading && styles.buttonDisabled]}
+            onPress={handleGoogleSignIn}
+            disabled={isLoading}
+          >
+            <Text style={styles.googleButtonText}>Sign In with Google</Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
@@ -119,6 +139,15 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: { opacity: 0.6 },
   buttonText: { color: '#111827', fontSize: 16, fontWeight: '700' },
+  googleButton: {
+    backgroundColor: '#374151',
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#4b5563',
+  },
+  googleButtonText: { color: '#ffffff', fontSize: 16, fontWeight: '600' },
   link: { textAlign: 'center', color: '#6b7280', fontSize: 14 },
   linkBold: { color: '#a3e635', fontWeight: '600' },
 })

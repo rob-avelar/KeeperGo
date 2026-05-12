@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import { apiClient } from '@/lib/api'
 import { useAuthStore } from '@/lib/auth-store'
-import type { Booking } from '@/lib/packages/shared-types'
+import type { Booking } from '@keepergo/shared-types'
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: 'Pending',
@@ -47,7 +47,7 @@ function BookingCard({ booking, onPress }: { booking: Booking; onPress: () => vo
       {booking.goalkeeper && (
         <Text style={styles.cardGoalkeeper}>Goalkeeper: {booking.goalkeeper.name}</Text>
       )}
-      <Text style={styles.cardAmount}>€{booking.totalAmount.toFixed(2)}</Text>
+      <Text style={styles.cardAmount}>€{(booking.totalAmount ?? 0).toFixed(2)}</Text>
     </TouchableOpacity>
   )
 }

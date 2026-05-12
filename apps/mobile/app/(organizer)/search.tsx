@@ -27,7 +27,7 @@ function GoalkeeperCard({ gk, onPress }: { gk: GoalkeeperProfile; onPress: () =>
           <Text style={styles.cardName}>{gk.user?.name}</Text>
           <Text style={styles.cardCity}>{gk.city ?? 'City not specified'}</Text>
           <View style={styles.cardMeta}>
-            <Text style={styles.cardRating}>⭐ {gk.averageRating.toFixed(1)}</Text>
+            <Text style={styles.cardRating}>⭐ {(gk.averageRating ?? 0).toFixed(1)}</Text>
             <Text style={styles.cardMatches}>{gk.totalMatches} matches</Text>
           </View>
         </View>

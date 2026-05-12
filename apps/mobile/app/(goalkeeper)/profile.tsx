@@ -12,12 +12,21 @@ import {
 } from 'react-native'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/lib/api'
+import { useAuthStore } from '@/lib/auth-store'
 
 const EXPERIENCE_LEVELS = ['Beginner', 'Amateur', 'Semi-professional', 'Professional']
 const FIELD_TYPES = ['Natural grass', 'Artificial turf', 'Indoor', 'Sand']
 
 export default function ProfileScreen() {
   const queryClient = useQueryClient()
+  const { signOut } = useAuthStore()
+
+  function handleSignOut() {
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Sign Out', style: 'destructive', onPress: () => signOut() },
+    ])
+  }
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['goalkeeper-profile'],
@@ -98,7 +107,7 @@ export default function ProfileScreen() {
 
       <View style={styles.statsRow}>
         <View style={styles.statCard}>
-          <Text style={styles.statNumber}>⭐ {profile?.averageRating.toFixed(1)}</Text>
+          <Text style={styles.statNumber}>⭐ {(profile?.averageRating ?? 0).toFixed(1)}</Text>
           <Text style={styles.statLabel}>Rating</Text>
         </View>
         <View style={styles.statCard}>
@@ -206,6 +215,10 @@ export default function ProfileScreen() {
           <Text style={styles.saveButtonText}>Save Profile</Text>
         )}
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+        <Text style={styles.signOutText}>Sign Out</Text>
+      </TouchableOpacity>
     </ScrollView>
   )
 }
@@ -273,4 +286,6 @@ const styles = StyleSheet.create({
   },
   saveButtonDisabled: { opacity: 0.6 },
   saveButtonText: { color: '#111827', fontSize: 16, fontWeight: '700' },
+  signOutButton: { marginTop: 12, backgroundColor: '#1f2937', borderRadius: 12, paddingVertical: 14, alignItems: 'center', borderWidth: 1, borderColor: '#ef4444' },
+  signOutText: { color: '#ef4444', fontSize: 16, fontWeight: '600' },
 })

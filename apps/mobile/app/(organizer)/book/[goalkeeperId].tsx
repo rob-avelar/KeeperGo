@@ -90,7 +90,7 @@ export default function BookGoalkeeperScreen() {
         <View>
           <Text style={styles.goalkeeperName}>{gk?.user?.name}</Text>
           <Text style={styles.goalkeeperCity}>{gk?.city}</Text>
-          <Text style={styles.goalkeeperRating}>⭐ {gk?.averageRating.toFixed(1)} · {gk?.totalMatches} matches</Text>
+          <Text style={styles.goalkeeperRating}>⭐ {(gk?.averageRating ?? 0).toFixed(1)} · {gk?.totalMatches} matches</Text>
         </View>
       </View>
 

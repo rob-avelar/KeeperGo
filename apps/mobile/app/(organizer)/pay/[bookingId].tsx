@@ -93,11 +93,11 @@ export default function PayScreen() {
         {booking.goalkeeper && <Row label="Goalkeeper" value={booking.goalkeeper.name} />}
         <Row label="Duration" value={`${booking.duration} minutes`} />
         <View style={styles.divider} />
-        <Row label="Rate/hour" value={`€${booking.pricePerHour.toFixed(2)}`} />
-        <Row label="Platform fee" value={`€${booking.platformFee.toFixed(2)}`} small />
+        <Row label="Rate/hour" value={`€${(booking.pricePerHour ?? 0).toFixed(2)}`} />
+        <Row label="Platform fee" value={`€${(booking.platformFee ?? 0).toFixed(2)}`} small />
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalValue}>€{booking.totalAmount.toFixed(2)}</Text>
+          <Text style={styles.totalValue}>€{(booking.totalAmount ?? 0).toFixed(2)}</Text>
         </View>
       </View>
 
@@ -116,7 +116,7 @@ export default function PayScreen() {
           {isPaying ? (
             <ActivityIndicator color="#111827" />
           ) : (
-            <Text style={styles.payButtonText}>Pay €{booking.totalAmount.toFixed(2)}</Text>
+            <Text style={styles.payButtonText}>Pay €{(booking.totalAmount ?? 0).toFixed(2)}</Text>
           )}
         </TouchableOpacity>
       )}
