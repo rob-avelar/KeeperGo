@@ -91,6 +91,25 @@ export class KeeperGoApiClient {
     return { sessionToken: match[1] }
   }
 
+  /**
+   * Google OAuth para mobile: exchange o Google idToken por um sessionToken
+   */
+  async signInWithGoogle(idToken: string): Promise<{ sessionToken: string }> {
+    const response = await fetch(`${this.baseUrl}/api/auth/mobile/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    })
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({ error: response.statusText }))
+      throw new ApiError(response.status, body.error ?? 'Google authentication failed')
+    }
+
+    const data = await response.json()
+    return { sessionToken: data.sessionToken }
+  }
+
   async signUp(data: {
     email: string
     password: string

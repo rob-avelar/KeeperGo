@@ -32,7 +32,7 @@ function GoalkeeperCard({ gk, onPress }: { gk: GoalkeeperProfile; onPress: () =>
           </View>
         </View>
         <View style={styles.cardPrice}>
-          <Text style={styles.priceValue}>€{gk.hourlyRateMin}</Text>
+          <Text style={styles.priceValue}>€{((gk.hourlyRateMin ?? 0) / 100).toFixed(0)}</Text>
           <Text style={styles.priceLabel}>/hour</Text>
         </View>
       </View>

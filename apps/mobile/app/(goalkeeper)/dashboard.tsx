@@ -35,7 +35,7 @@ function PendingBookingCard({
       </View>
       <Text style={styles.cardOrganizer}>Organizer: {booking.organizer.name}</Text>
       <Text style={styles.cardLocation} numberOfLines={1}>{booking.location}</Text>
-      <Text style={styles.cardDuration}>{booking.duration} min · €{(booking.goalkeeperEarnings ?? 0).toFixed(2)}</Text>
+      <Text style={styles.cardDuration}>{booking.duration} min · €{((booking.goalkeeperEarnings ?? 0) / 100).toFixed(2)}</Text>
       <View style={styles.cardActions}>
         <TouchableOpacity style={[styles.actionBtn, styles.rejectBtn]} onPress={onReject}>
           <Text style={styles.rejectBtnText}>Decline</Text>
@@ -74,7 +74,7 @@ function BookingCard({ booking }: { booking: Booking }) {
         </View>
       </View>
       <Text style={styles.cardLocation} numberOfLines={1}>{booking.location}</Text>
-      <Text style={styles.cardEarnings}>Earnings: €{(booking.goalkeeperEarnings ?? 0).toFixed(2)}</Text>
+      <Text style={styles.cardEarnings}>Earnings: €{((booking.goalkeeperEarnings ?? 0) / 100).toFixed(2)}</Text>
     </View>
   )
 }
@@ -143,7 +143,7 @@ export default function GoalkeeperDashboard() {
           <Text style={styles.statLabel}>Matches Played</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statNumber}>€{totalEarned.toFixed(0)}</Text>
+          <Text style={styles.statNumber}>€{(totalEarned / 100).toFixed(0)}</Text>
           <Text style={styles.statLabel}>Total Earned</Text>
         </View>
         <View style={styles.statCard}>

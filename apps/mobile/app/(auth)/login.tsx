@@ -5,8 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
+  ScrollView,
   Alert,
   ActivityIndicator,
 } from 'react-native'
@@ -49,11 +48,13 @@ export default function LoginScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.inner}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.inner}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        automaticallyAdjustKeyboardInsets
+      >
         <View style={styles.logoRow}>
           <Text style={styles.logoIcon}>⚽</Text>
           <Text style={styles.logo}>KeeperGo</Text>
@@ -108,14 +109,13 @@ export default function LoginScreen() {
             Don't have an account? <Text style={styles.linkBold}>Sign Up</Text>
           </Text>
         </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+      </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#111827' },
-  inner: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
+  inner: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 40 },
   logoRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
   logoIcon: { fontSize: 32, marginRight: 8 },
   logo: { fontSize: 36, fontWeight: '800', color: '#a3e635' },

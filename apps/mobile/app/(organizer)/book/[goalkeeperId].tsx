@@ -162,13 +162,13 @@ export default function BookGoalkeeperScreen() {
 
       <View style={styles.priceCard}>
         <View style={styles.priceRow}>
-          <Text style={styles.priceLabel}>€{pricePerHour}/hour × {Number(duration) / 60}h</Text>
-          <Text style={styles.priceValue}>€{totalAmount.toFixed(2)}</Text>
+          <Text style={styles.priceLabel}>€{(pricePerHour / 100).toFixed(2)}/hour × {Number(duration) / 60}h</Text>
+          <Text style={styles.priceValue}>€{(totalAmount / 100).toFixed(2)}</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.priceRow}>
           <Text style={styles.priceTotalLabel}>Total</Text>
-          <Text style={styles.priceTotalValue}>€{totalAmount.toFixed(2)}</Text>
+          <Text style={styles.priceTotalValue}>€{(totalAmount / 100).toFixed(2)}</Text>
         </View>
       </View>
 

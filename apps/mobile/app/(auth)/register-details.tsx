@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform, ScrollView, Alert, ActivityIndicator,
 } from 'react-native'
-import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import { apiClient } from '@/lib/api'
 import { useAuthStore } from '@/lib/auth-store'
 
@@ -15,8 +15,11 @@ export default function RegisterDetailsScreen() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [inviteCode, setInviteCode] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const { signIn } = useAuthStore()
-  const router = useRouter()
+  const { signIn, signOut } = useAuthStore()
+
+  function handleBack() {
+    signOut()
+  }
 
   async function handleRegister() {
     if (!name || !email || !password) {
@@ -54,7 +57,7 @@ export default function RegisterDetailsScreen() {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.container}>
-        <TouchableOpacity style={styles.back} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.back} onPress={handleBack}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 

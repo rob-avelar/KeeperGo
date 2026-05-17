@@ -47,7 +47,7 @@ function BookingCard({ booking, onPress }: { booking: Booking; onPress: () => vo
       {booking.goalkeeper && (
         <Text style={styles.cardGoalkeeper}>Goalkeeper: {booking.goalkeeper.name}</Text>
       )}
-      <Text style={styles.cardAmount}>€{(booking.totalAmount ?? 0).toFixed(2)}</Text>
+      <Text style={styles.cardAmount}>€{((booking.totalAmount ?? 0) / 100).toFixed(2)}</Text>
     </TouchableOpacity>
   )
 }

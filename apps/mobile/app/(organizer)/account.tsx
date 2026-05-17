@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Linking } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useAuthStore } from '@/lib/auth-store'
 
@@ -35,9 +35,9 @@ export default function AccountScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Support</Text>
-        <MenuItem label="Contact Us" onPress={() => {}} />
-        <MenuItem label="Privacy Policy" onPress={() => {}} />
-        <MenuItem label="Terms of Service" onPress={() => {}} />
+        <MenuItem label="Contact Us" onPress={() => Linking.openURL('mailto:contact@keepergo.nl')} />
+        <MenuItem label="Privacy Policy" onPress={() => Linking.openURL('https://keepergo.nl/privacy')} />
+        <MenuItem label="Terms of Service" onPress={() => Linking.openURL('https://keepergo.nl/terms')} />
       </View>
 
       <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>

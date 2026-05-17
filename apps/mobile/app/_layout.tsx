@@ -5,7 +5,10 @@ import { Component, useEffect } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { StripeProvider } from '@stripe/stripe-react-native'
 import { useAuthStore } from '@/lib/auth-store'
+
+const STRIPE_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ''
 
 class ErrorBoundary extends Component<
   { children: React.ReactNode },
@@ -67,7 +70,7 @@ function AuthGate() {
       router.replace('/(auth)/login')
     } else if (user && (inAuthGroup || !inProtectedGroup)) {
       const role = user.role?.toUpperCase()
-      if (role === 'ORGANIZER') {
+      if (role === 'ORGANIZER' || role === 'ADMIN') {
         router.replace('/(organizer)/dashboard')
       } else if (role === 'GOALKEEPER') {
         router.replace('/(goalkeeper)/dashboard')
@@ -87,13 +90,15 @@ function AuthGate() {
 export default function RootLayout() {
   return (
     <ErrorBoundary>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
-          <QueryClientProvider client={queryClient}>
-            <AuthGate />
-          </QueryClientProvider>
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+      <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY} merchantIdentifier="merchant.nl.keepergo">
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <SafeAreaProvider>
+            <QueryClientProvider client={queryClient}>
+              <AuthGate />
+            </QueryClientProvider>
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
+      </StripeProvider>
     </ErrorBoundary>
   )
 }
