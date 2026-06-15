@@ -1,0 +1,92 @@
+name: CI - Tests & Build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lint code
+        run: yarn lint --max-warnings=0
+        continue-on-error: true
+
+      - name: Run tests
+        run: yarn test --coverage --watchAll=false
+        continue-on-error: true
+
+      - name: Build web app
+        run: yarn build
+        env:
+          NEXT_PUBLIC_API_URL: https://keepergo-api.abacusai.app
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+
+  eas-build-ios-preview:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Setup EAS
+        run: yarn global add eas-cli
+
+      - name: Build iOS Preview with EAS
+        run: cd apps/mobile && eas build --platform ios --profile preview --non-interactive
+        env:
+          EAS_BUILD_RUNNER_LINUX_ENVIRONMENT_SKIP_GIT_REFS_VALIDATION: "true"
+
+  eas-build-android:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Setup EAS
+        run: yarn global add eas-cli
+
+      - name: Build Android with EAS
+        run: cd apps/mobile && eas build --platform android --profile preview --non-interactive
